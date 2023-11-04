@@ -1,0 +1,12 @@
+---
+- name: OS Check
+  hosts: all
+  become: false
+
+  tasks:
+    - name: Check if OS is supported
+      ansible.builtin.fail:
+        msg: "I'm sorry your OS or Version has not been tested yet"
+      when: >
+        ansible_distribution not in ["Ubuntu"] or
+        ansible_distribution_version not in ["22.04"]
