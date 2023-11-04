@@ -1,0 +1,54 @@
+---
+- name: Add user
+  hosts: all
+  vars_files:
+    - "../vars/vars.yml"
+  become: true
+
+  tasks:
+    - name: Add the user {{ USER }}
+      ansible.builtin.user:
+        name: "{{ USER }}"
+        shell: /bin/bash
+        password: "{{ PASSWORD }}"
+        groups: sudo
+        append: true
+
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: /home/{{ USER }}/.ssh
+        state: directory
+        owner: "{{ USER }}"
+        group: "{{ USER }}"
+        mode: '0755'
+
+    - name: Change file ownership, for old servers that did not have it set correctly
+      ansible.builtin.file:
+        path: /home/{{ USER }}/.ssh
+        owner: "{{ USER }}"
+        group: "{{ USER }}"
+
+    - name: Add ssh authorized keys
+      ansible.builtin.copy:
+        src: ../files/authorized_keys
+        dest: /home/{{ USER }}/.ssh/authorized_keys
+        owner: "{{ USER }}"
+        group: "{{ USER }}"
+        mode: '0600'
+
+    - name: Install sudo NO PASS
+      ansible.builtin.template:
+        src: ../templates/nopass.j2
+        dest: /etc/sudoers.d/nopass
+        owner: root
+        group: root
+        mode: '0440'
+
+    - name: Add bash profile
+      ansible.builtin.copy:
+        src: ../files/bash_profile_general
+        dest: /home/{{ USER }}/.bash_profile
+        owner: "{{ USER }}"
+        group: "{{ USER }}"
+        mode: '0644'
+        force: false

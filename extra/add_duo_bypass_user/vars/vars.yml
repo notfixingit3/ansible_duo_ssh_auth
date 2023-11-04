@@ -1,0 +1,7 @@
+USER: ansible
+# To get the correct hashed password
+# Run: pip3 install passlib
+# Suggest using a random 64 char password, you won't ever need it
+# Then: python3 -c "from passlib.hash import sha512_crypt; import getpass; print(sha512_crypt.using(rounds=5000).hash(getpass.getpass()))"
+# Copy output to below var
+PASSWORD: output-from-passlib
