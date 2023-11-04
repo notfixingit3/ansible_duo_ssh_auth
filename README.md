@@ -2,6 +2,10 @@
 
 Only Supporting Ubuntu 22.04 for the moment
 
+## Note: See extra/README.md 
+If you want to first add a user that can bypass duo for future playbook runs  
+If you change the username from ansible, make sure you add it to groups with !username
+
 ## To install
 * Edit hosts file or use your own
 * Edit vars/vars.yml and set your information from DUO Application Unix
