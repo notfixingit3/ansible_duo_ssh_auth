@@ -1,0 +1,59 @@
+---
+- name: Install Duo
+  hosts: all
+  vars_files:
+    - "../../vars/vars.yml"
+  become: true
+
+  tasks:
+    - name: Add DUO Apt signing key
+      ansible.builtin.apt_key:
+        url: https://duo.com/DUO-GPG-PUBLIC-KEY.asc
+        state: present
+
+    - name: Install Duo Repo File
+      ansible.builtin.copy:
+        src: ../../files/duo_2204.list
+        dest: /etc/apt/sources.list.d/duo.list
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'jammy'
+
+    - name: Install the duo-unix
+      ansible.builtin.apt:
+        update_cache: true
+        name: duo-unix
+        state: present
+
+    - name: Install duo pam config
+      ansible.builtin.template:
+        src: ../../templates/pam_duo.conf.j2
+        dest: /etc/duo/pam_duo.conf
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Install sshd_config
+      ansible.builtin.copy:
+        src: ../../files/sshd_config_2204
+        dest: /etc/ssh/sshd_config
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'jammy'
+
+    - name: Install pam sshd
+      ansible.builtin.copy:
+        src: ../../files/sshd_2204
+        dest: /etc/pam.d/sshd
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'jammy'
+
+    - name: restart sshd
+      ansible.builtin.systemd:
+        state: restarted
+        daemon_reload: true
+        name: sshd

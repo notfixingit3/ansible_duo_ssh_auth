@@ -1,0 +1,8 @@
+---
+- name: Duo Unix
+  hosts: all
+  gather_facts: true
+# Tasks file for Duo Unix Auth
+
+- import_playbook: subtasks/install.yml
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'jammy'

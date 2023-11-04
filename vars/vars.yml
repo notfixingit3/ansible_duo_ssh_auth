@@ -1,0 +1,7 @@
+IKEY:
+SKEY:
+HOST:
+
+# Reference https://duo.com/docs/loginduo#duo-configuration-options
+GROUPS: '!operations,!ansible,!ubuntu,!no2fa,sudo'
+FAILMODE: safe
