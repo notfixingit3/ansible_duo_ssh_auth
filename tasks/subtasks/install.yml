@@ -11,7 +11,7 @@
         url: https://duo.com/DUO-GPG-PUBLIC-KEY.asc
         state: present
 
-    - name: Install Duo Repo File
+    - name: Install Duo Repo File Ubuntu 22.04
       ansible.builtin.copy:
         src: ../../files/duo_2204.list
         dest: /etc/apt/sources.list.d/duo.list
@@ -19,6 +19,15 @@
         group: root
         mode: u=rw,g=r,o=r
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'jammy'
+
+    - name: Install Duo Repo File Ubuntu 24.04
+      ansible.builtin.copy:
+        src: ../../files/duo_2404.list
+        dest: /etc/apt/sources.list.d/duo.list
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'noble'
 
     - name: Install the duo-unix
       ansible.builtin.apt:
